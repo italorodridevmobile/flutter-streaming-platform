@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "4356324759",
+    "project_id": "curriculo-italodev",
+    "storage_bucket": "curriculo-italodev.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:4356324759:android:43abd8236a3a4d9b5358d2",
+        "android_client_info": {
+          "package_name": "com.example.app_flutter_riverpod"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAs8wqLmLr2A_IwUhzcpII3GaTZhBPwhKg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
