@@ -24,6 +24,16 @@ class ProfilesRepositoryImpl implements IProfilesRepository {
   }
 
   @override
+  Future<List<ProfileEntity>> deleteUserProfiles(String profileId) async {
+    try {
+      final response = await _dio.delete('/profiles/delete/${profileId}');
+      return response.data;
+    } on DioException catch (e) {
+      throw Exception('Erro ao buscar perfis da conta: ${e.message}');
+    }
+  }
+
+  @override
   Future<ProfileEntity> createProfile(
     String accountId, {
     required String name,

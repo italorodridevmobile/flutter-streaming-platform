@@ -9,4 +9,5 @@ abstract class IProfilesRepository {
     required String deviceId,
     required String deviceName,
   });
+  Future<void> deleteUserProfiles(String profileId);
 }

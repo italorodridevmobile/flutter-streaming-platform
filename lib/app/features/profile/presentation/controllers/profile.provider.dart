@@ -12,7 +12,17 @@ final profilesRepositoryProvider = Provider((ref) {
 
 final selectedProfileProvider = StateProvider<ProfileEntity?>((ref) => null);
 
-final userProfilesProvider = FutureProvider.family<List<ProfileEntity>, String>((ref, accountId) async {
+final userProfilesProvider = FutureProvider.family<List<ProfileEntity>, String>(
+  (ref, accountId) async {
+    final repository = ref.watch(profilesRepositoryProvider);
+    return await repository.getUserProfiles(accountId);
+  },
+);
+
+final deleteUserProfilesProvider = FutureProvider.family<dynamic, String>((
+  ref,
+  profileId,
+) async {
   final repository = ref.watch(profilesRepositoryProvider);
-  return await repository.getUserProfiles(accountId);
+  return repository.deleteUserProfiles(profileId);
 });

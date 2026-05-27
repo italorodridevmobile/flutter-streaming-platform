@@ -16,6 +16,7 @@ import '../../../profile/domain/entities/profile.entity.dart';
 import '../../../profile/presentation/controllers/profile.provider.dart';
 import '../controllers/categories_movies.providers.dart';
 import '../widgets/card_movie.widget.dart';
+import '../widgets/carrousel_movies.widget.dart';
 
 class CatalogMoviesPage extends ConsumerStatefulWidget {
   const CatalogMoviesPage({super.key});
@@ -198,7 +199,7 @@ class _CatalogMoviesPageState extends ConsumerState<CatalogMoviesPage> {
       height: 300,
       child: state.when(
         data: (listItems) {
-          return CarrouselImageComponent(
+          return CarrouselMoviesWidget(
             imageUrls: listItems.map((MovieEntity el) => el.imageUrl).toList(),
             onPageLongClick: (index) {
               NavigatorApp.to(context, DetailMoviePage(data: listItems[index]));

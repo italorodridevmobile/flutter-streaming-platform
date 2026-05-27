@@ -167,131 +167,134 @@ class ProfileSelectionPage extends ConsumerWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setModalState) {
-            return Padding(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-                top: 24,
-                left: 24,
-                right: 24,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  TextComponent(
-                    value: 'Criar Novo Perfil',
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 24),
-                  Center(
-                    child: Container(
-                      width: 70,
-                      height: 70,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        image: DecorationImage(
-                          image: AssetImage(selectedAvatar),
-                          fit: BoxFit.cover,
+        return SafeArea(
+          child: StatefulBuilder(
+            builder: (context, setModalState) {
+              return Padding(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+                  top: 24,
+                  left: 24,
+                  right: 24,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    TextComponent(
+                      value: 'Criar Novo Perfil',
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 24),
+                    Center(
+                      child: Container(
+                        width: 70,
+                        height: 70,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                            image: AssetImage(selectedAvatar),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 24),
-                  TextComponent(
-                    value: 'Escolha um avatar:',
-                    color: Colors.white70,
-                    fontSize: 14,
-                  ),
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    height: 70,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: availableAvatars.length,
-                      separatorBuilder: (context, index) =>
-                          const SizedBox(width: 12),
-                      itemBuilder: (context, index) {
-                        final avatar = availableAvatars[index];
-                        final isSelected = avatar == selectedAvatar;
-                        return GestureDetector(
-                          onTap: () {
-                            setModalState(() {
-                              selectedAvatar = avatar;
-                            });
-                          },
-                          child: Container(
-                            width: 70,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(14),
-                              border: Border.all(
-                                color: isSelected
-                                    ? AppColor.button
-                                    : Colors.transparent,
-                                width: 3,
-                              ),
-                              image: DecorationImage(
-                                image: AssetImage(avatar),
-                                fit: BoxFit.cover,
+                    const SizedBox(height: 24),
+                    TextComponent(
+                      value: 'Escolha um avatar:',
+                      color: Colors.white70,
+                      fontSize: 14,
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      height: 70,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: availableAvatars.length,
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(width: 12),
+                        itemBuilder: (context, index) {
+                          final avatar = availableAvatars[index];
+                          final isSelected = avatar == selectedAvatar;
+                          return GestureDetector(
+                            onTap: () {
+                              setModalState(() {
+                                selectedAvatar = avatar;
+                              });
+                            },
+                            child: Container(
+                              width: 70,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(
+                                  color: isSelected
+                                      ? AppColor.button
+                                      : Colors.transparent,
+                                  width: 3,
+                                ),
+                                image: DecorationImage(
+                                  image: AssetImage(avatar),
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  InputTextComponent(
-                    textEditingController: nameCtrl,
-                    labelText: 'Nome do perfil',
-                    hintText: 'Informe o nome',
-                    textColor: Colors.white,
-                    borderColor: Colors.white,
-                    borderRadius: 16,
-                    onChanged: (event) {},
-                    maxLength: 20,
-                  ),
-                  const SizedBox(height: 24),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ButtonStylizedComponent(
-                          color: AppColor.button,
-                          padding: EdgeInsetsGeometry.all(5),
-                          borderRadius: 100,
-                          label: TextComponent(
-                            value: 'Salvar perfil',
-                            color: Colors.white,
-                          ),
-                          onPressed: () async {
-                            if (nameCtrl.text.trim().isEmpty) return;
-
-                            await ref
-                                .read(profilesRepositoryProvider)
-                                .createProfile(
-                                  accountId,
-                                  name: nameCtrl.text.trim(),
-                                  avatarAssetPath: selectedAvatar,
-                                  deviceId: 'dispositivo_flutter_id',
-                                  deviceName: 'Smartphone',
-                                );
-
-                            ref.invalidate(userProfilesProvider(accountId));
-                            Navigator.pop(context);
-                          },
-                        ),
+                          );
+                        },
                       ),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          },
+                    ),
+                    const SizedBox(height: 24),
+                    InputTextComponent(
+                      textEditingController: nameCtrl,
+                      labelText: 'Nome do perfil',
+                      hintText: 'Informe o nome',
+                      textColor: Colors.white,
+                      borderColor: Colors.white,
+                      borderRadius: 16,
+                      onChanged: (event) {},
+                      maxLength: 20,
+                    ),
+                    const SizedBox(height: 24),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ButtonStylizedComponent(
+                            color: AppColor.button,
+                            padding: EdgeInsetsGeometry.all(5),
+                            borderRadius: 100,
+                            label: TextComponent(
+                              value: 'Salvar perfil',
+                              color: Colors.white,
+                            ),
+                            onPressed: () async {
+                              if (nameCtrl.text.trim().isEmpty) return;
+
+                              await ref
+                                  .read(profilesRepositoryProvider)
+                                  .createProfile(
+                                    accountId,
+                                    name: nameCtrl.text.trim(),
+                                    avatarAssetPath: selectedAvatar,
+                                    deviceId: 'dispositivo_flutter_id',
+                                    deviceName: 'Smartphone',
+                                  );
+
+                              ref.invalidate(userProfilesProvider(accountId));
+                              nameCtrl.clear();
+                              NavigatorApp.to(context, CatalogMoviesPage());
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         );
       },
     );
