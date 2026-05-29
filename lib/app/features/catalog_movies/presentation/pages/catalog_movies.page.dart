@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_crise/components/carrousel-image.component.dart';
 import 'package:flutter_crise/components/text.component.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../profile/domain/entities/profile.entity.dart';
 import '../../../profile/presentation/controllers/profile.provider.dart';
@@ -81,7 +82,7 @@ class _CatalogMoviesPageState extends ConsumerState<CatalogMoviesPage> {
                 categoryMoviesState.when(
                   loading: () => const Padding(
                     padding: EdgeInsets.only(top: 30),
-                    child: Center(child: ProgressAppComponent()),
+                    child: SizedBox(),
                   ),
                   error: (error, stack) => const SizedBox.shrink(),
                   data: (categories) {
@@ -212,7 +213,19 @@ class _CatalogMoviesPageState extends ConsumerState<CatalogMoviesPage> {
             color: AppColor.danger,
           ),
         ),
-        loading: () => Center(child: ProgressAppComponent()),
+        loading: () => _buildShimmer(),
+      ),
+    );
+  }
+
+  Widget _buildShimmer() {
+    return Shimmer.fromColors(
+      baseColor: const Color.fromARGB(255, 20, 22, 41),
+      highlightColor: const Color.fromARGB(255, 43, 45, 78),
+      child: Container(
+        width: double.infinity,
+        height: 300,
+        color: const Color.fromARGB(255, 30, 32, 59),
       ),
     );
   }

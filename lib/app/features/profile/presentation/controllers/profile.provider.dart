@@ -11,6 +11,7 @@ final profilesRepositoryProvider = Provider((ref) {
 });
 
 final selectedProfileProvider = StateProvider<ProfileEntity?>((ref) => null);
+final createProfileLoadingProvider = StateProvider<bool>((ref) => false);
 
 final userProfilesProvider = FutureProvider.family<List<ProfileEntity>, String>(
   (ref, accountId) async {
@@ -19,7 +20,8 @@ final userProfilesProvider = FutureProvider.family<List<ProfileEntity>, String>(
   },
 );
 
-final deleteUserProfilesProvider = FutureProvider.family<dynamic, String>((
+final deleteUserProfilesProvider =
+    FutureProvider.family<dynamic, String>((
   ref,
   profileId,
 ) async {

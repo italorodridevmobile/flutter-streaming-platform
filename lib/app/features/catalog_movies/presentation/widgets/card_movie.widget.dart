@@ -2,8 +2,7 @@ import 'package:app_flutter_riverpod/app/core/design_system/colors/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_crise/components/text.component.dart';
-
-import '../../../../core/utils/progress_app.component.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CardMovieWidget extends StatelessWidget {
   final String imageUrl;
@@ -22,7 +21,7 @@ class CardMovieWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      borderRadius: BorderRadius.all(Radius.circular(10)),
+      borderRadius: const BorderRadius.all(Radius.circular(10)),
       onTap: onTap,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8.0),
@@ -31,19 +30,26 @@ class CardMovieWidget extends StatelessWidget {
           width: width,
           height: height,
           fit: BoxFit.cover,
-          placeholder: (context, url) => Container(
-            color: AppColor.neutral3,
-            child: const Center(
-              child: ProgressAppComponent(),
+
+          placeholder: (context, url) => Shimmer.fromColors(
+            baseColor: const Color.fromARGB(255, 20, 22, 41),
+            highlightColor: const Color.fromARGB(255, 43, 45, 78),
+            child: Container(
+              width: width,
+              height: height,
+              color: const Color.fromARGB(255, 30, 32, 59),
             ),
           ),
+
           errorWidget: (context, url, error) => Container(
+            width: width,
+            height: height,
             color: AppColor.neutral3,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.broken_image, color: AppColor.neutral2, size: 40),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 TextComponent(
                   value: 'Imagem indisponível',
                   color: AppColor.danger,

@@ -17,5 +17,5 @@ final trendingMoviesProvider = FutureProvider<List<MovieEntity>>((ref) async {
 
 final moviesPerCategoryProvider = FutureProvider.family<List<MovieEntity>, String>((ref, idCategory) async {
   final repository = ref.watch(catalogRepositoryProvider);
-  return repository.getMoviesPerCategory(idCategory, page: 1, limit: 10);
+  return repository.getMoviesPerCategory(idCategory, page: 1, limit: 20);
 });

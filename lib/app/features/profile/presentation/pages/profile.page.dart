@@ -19,6 +19,7 @@ class ProfileSelectionPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profilesAsync = ref.watch(userProfilesProvider(accountId));
+    final isLoading = ref.watch(createProfileLoadingProvider);
 
     return PopScope(
       canPop: false,
@@ -53,8 +54,12 @@ class ProfileSelectionPage extends ConsumerWidget {
                           alignment: WrapAlignment.center,
                           children: [
                             ...profiles.map(
-                              (profile) =>
-                                  _buildProfileItem(context, ref, profile),
+                              (profile) => _buildProfileItem(
+                                context,
+                                ref,
+                                profile,
+                                profiles,
+                              ),
                             ),
                             if (profiles.length < 5)
                               _buildAddProfileButton(context, ref),
@@ -71,7 +76,7 @@ class ProfileSelectionPage extends ConsumerWidget {
                             borderRadius: 100,
                             outlineColor: AppColor.button,
                             label: TextComponent(
-                              value: 'Voltar ao menu',
+                              value: 'Ir para o catalogo',
                               color: Colors.white,
                             ),
                             onPressed: () {
@@ -95,34 +100,77 @@ class ProfileSelectionPage extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     ProfileEntity profile,
+    List<ProfileEntity> profiles,
   ) {
-    return GestureDetector(
-      onTap: () {
-        ref.read(selectedProfileProvider.notifier).state = profile;
-        NavigatorApp.to(context, const CatalogMoviesPage());
-      },
-      child: Column(
-        children: [
-          Container(
-            width: 100,
-            height: 100,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.transparent, width: 3),
-              image: DecorationImage(
-                image: AssetImage(profile.avatarAssetPath),
-                fit: BoxFit.cover,
-              ),
+    return SizedBox(
+      width: 100,
+      child: GestureDetector(
+        onTap: () {
+          ref.read(selectedProfileProvider.notifier).state = profile;
+          NavigatorApp.to(context, const CatalogMoviesPage());
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.transparent, width: 3),
+                    image: DecorationImage(
+                      image: AssetImage(profile.avatarAssetPath),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+
+                profiles.length > 1
+                    ? Positioned(
+                        top: -8,
+                        right: -8,
+                        child: GestureDetector(
+                          onTap: () async {
+                            NavigatorApp.replace(context, CatalogMoviesPage());
+                            final repository = ref.read(
+                              profilesRepositoryProvider,
+                            );
+                            await repository.deleteUserProfiles(profile.id);
+                            await repository.getUserProfiles(accountId);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: const BoxDecoration(
+                              color: AppColor.button,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.delete,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                          ),
+                        ),
+                      )
+                    : Container(),
+              ],
             ),
-          ),
-          const SizedBox(height: 12),
-          TextComponent(
-            value: profile.name,
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
-        ],
+
+            const SizedBox(height: 12),
+
+            TextComponent(
+              value: profile.name,
+              color: Colors.white,
+              fontSize: 16,
+              textAlign: TextAlign.center,
+              fontWeight: FontWeight.w500,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -167,6 +215,8 @@ class ProfileSelectionPage extends ConsumerWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (context) {
+        final repository = ref.read(profilesRepositoryProvider);
+
         return SafeArea(
           child: StatefulBuilder(
             builder: (context, setModalState) {
@@ -284,7 +334,8 @@ class ProfileSelectionPage extends ConsumerWidget {
 
                               ref.invalidate(userProfilesProvider(accountId));
                               nameCtrl.clear();
-                              NavigatorApp.to(context, CatalogMoviesPage());
+                              repository.getUserProfiles(accountId);
+                              Navigator.pop(context);
                             },
                           ),
                         ),

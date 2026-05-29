@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crise/components/text.component.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../../core/design_system/colors/colors.dart';
-import '../../../../core/utils/progress_app.component.dart';
 
 enum IndicatorType { dots, numbered }
 
@@ -36,7 +36,8 @@ class CarrouselMoviesWidget extends StatefulWidget {
   final Function(int) onPageLongClick;
 
   @override
-  State<CarrouselMoviesWidget> createState() => _CarrouselMoviesWidgetState();
+  State<CarrouselMoviesWidget> createState() =>
+      _CarrouselMoviesWidgetState();
 }
 
 class _CarrouselMoviesWidgetState extends State<CarrouselMoviesWidget> {
@@ -72,13 +73,17 @@ class _CarrouselMoviesWidgetState extends State<CarrouselMoviesWidget> {
         ),
       );
     }
+
     dots = intersperse(const SizedBox(width: 6), dots).toList();
 
     return Align(
       alignment: Alignment.bottomCenter,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: dots),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: dots,
+        ),
       ),
     );
   }
@@ -93,12 +98,52 @@ class _CarrouselMoviesWidgetState extends State<CarrouselMoviesWidget> {
             color: Colors.black.withOpacity(.33),
             borderRadius: BorderRadius.circular(4),
           ),
-          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+          padding: const EdgeInsets.symmetric(
+            vertical: 4,
+            horizontal: 12,
+          ),
           child: Text(
-            '${(activeIndex + 1).toString()} / ${widget.imageUrls.length.toString()}',
-            style: const TextStyle(color: Colors.white, fontSize: 12),
+            '${(activeIndex + 1)} / ${widget.imageUrls.length}',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+            ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildShimmer() {
+    return Shimmer.fromColors(
+      baseColor: const Color.fromARGB(255, 20, 22, 41),
+      highlightColor: const Color.fromARGB(255, 43, 45, 78),
+      child: Container(
+        width: double.infinity,
+        height: widget.heigthImage,
+        color: const Color.fromARGB(255, 30, 32, 59),
+      ),
+    );
+  }
+
+  Widget _buildErrorWidget() {
+    return Container(
+      color: AppColor.neutral3,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.broken_image,
+            color: AppColor.neutral2,
+            size: 40,
+          ),
+          const SizedBox(height: 8),
+          TextComponent(
+            value: 'Imagem indisponível',
+            color: AppColor.danger,
+            fontSize: 12,
+          ),
+        ],
       ),
     );
   }
@@ -107,19 +152,20 @@ class _CarrouselMoviesWidgetState extends State<CarrouselMoviesWidget> {
   Widget build(BuildContext context) {
     return widget.imageUrls.isNotEmpty
         ? SizedBox(
-            height: widget.heigthBox ?? 200, // Defina a altura desejada aqui
+            height: widget.heigthBox ?? 200,
             child: Stack(
               children: [
                 PageView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: widget.imageUrls.length,
+                  controller: widget.pageController,
                   onPageChanged: (dynamic value) {
                     setActiveIndex(value);
+
                     if (widget.onPageChanged != null) {
                       widget.onPageChanged!(value);
                     }
                   },
-                  controller: widget.pageController,
                   itemBuilder: (BuildContext context, int index) {
                     return InkWell(
                       onTap: () {
@@ -128,43 +174,24 @@ class _CarrouselMoviesWidgetState extends State<CarrouselMoviesWidget> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(
                           widget.radiusImage ?? 0,
-                        ), // Define o raio da borda
+                        ),
                         child: widget.imageUrls[index] is File
                             ? Image.file(
                                 widget.imageUrls[index],
                                 fit: BoxFit.cover,
                                 height: widget.heigthImage,
                               )
-                            : widget.imageUrls[index].contains('https://')
+                            : widget.imageUrls[index]
+                                    .contains('https://')
                             ? CachedNetworkImage(
                                 imageUrl: widget.imageUrls[index],
                                 height: widget.heigthImage,
                                 fit: BoxFit.cover,
-                                placeholder: (context, url) => Container(
-                                  color: AppColor.neutral3,
-                                  child: const Center(
-                                    child: ProgressAppComponent(),
-                                  ),
-                                ),
-                                errorWidget: (context, url, error) => Container(
-                                  color: AppColor.neutral3,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.broken_image,
-                                        color: AppColor.neutral2,
-                                        size: 40,
-                                      ),
-                                      SizedBox(height: 8),
-                                      TextComponent(
-                                        value: 'Imagem indisponível',
-                                        color: AppColor.danger,
-                                        fontSize: 12,
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                placeholder: (context, url) =>
+                                    _buildShimmer(),
+                                errorWidget:
+                                    (context, url, error) =>
+                                        _buildErrorWidget(),
                               )
                             : Image.asset(
                                 widget.imageUrls[index],
@@ -187,10 +214,15 @@ class _CarrouselMoviesWidgetState extends State<CarrouselMoviesWidget> {
   }
 }
 
-Iterable<T> intersperse<T>(T element, Iterable<T> iterable) sync* {
+Iterable<T> intersperse<T>(
+  T element,
+  Iterable<T> iterable,
+) sync* {
   final iterator = iterable.iterator;
+
   if (iterator.moveNext()) {
     yield iterator.current;
+
     while (iterator.moveNext()) {
       yield element;
       yield iterator.current;
