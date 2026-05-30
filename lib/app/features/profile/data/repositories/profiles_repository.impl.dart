@@ -1,7 +1,6 @@
 import 'package:app_flutter_riverpod/app/features/profile/domain/entities/profile.entity.dart';
 import 'package:app_flutter_riverpod/app/features/profile/domain/repositories/i_profiles_repository.dart';
 import 'package:dio/dio.dart';
-
 import '../models/profile.model.dart';
 
 class ProfilesRepositoryImpl implements IProfilesRepository {
@@ -12,7 +11,7 @@ class ProfilesRepositoryImpl implements IProfilesRepository {
   @override
   Future<List<ProfileEntity>> getUserProfiles(String accountId) async {
     try {
-      final response = await _dio.get('/profiles/list/${accountId}');
+      final response = await _dio.get('/profiles/list/$accountId');
       final List<dynamic> data = response.data as List<dynamic>;
 
       return data
@@ -24,12 +23,11 @@ class ProfilesRepositoryImpl implements IProfilesRepository {
   }
 
   @override
-  Future<List<ProfileEntity>> deleteUserProfiles(String profileId) async {
+  Future<void> deleteUserProfiles(String profileId) async { // 🛠️ Corrigido para void
     try {
-      final response = await _dio.delete('/profiles/delete/${profileId}');
-      return response.data;
+      await _dio.delete('/profiles/delete/$profileId');
     } on DioException catch (e) {
-      throw Exception('Erro ao buscar perfis da conta: ${e.message}');
+      throw Exception('Erro ao deletar perfil: ${e.message}');
     }
   }
 

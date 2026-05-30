@@ -43,7 +43,7 @@ class RegisterPage extends ConsumerWidget {
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
                   colors: [AppColor.dark, AppColor.dark.withAlpha(60)],
-                  stops: [0.8, 0.9],
+                  stops: [0.6, 0.9],
                 ),
               ),
             ),

@@ -1,6 +1,8 @@
 import 'package:app_flutter_riverpod/app/core/design_system/colors/colors.dart';
 import 'package:app_flutter_riverpod/app/core/utils/navigator_app.dart';
 import 'package:app_flutter_riverpod/app/core/utils/progress_app.component.dart';
+import 'package:app_flutter_riverpod/app/features/authentication/presentation/pages/login.page.dart';
+import 'package:app_flutter_riverpod/app/features/authentication/presentation/pages/splash.dart';
 import 'package:app_flutter_riverpod/app/features/catalog_movies/domain/entities/movie_entity.dart';
 import 'package:app_flutter_riverpod/app/features/catalog_movies/presentation/controllers/catalog_movies.providers.dart';
 import 'package:app_flutter_riverpod/app/features/catalog_movies/presentation/widgets/card_category.widget.dart';
@@ -71,12 +73,18 @@ class _CatalogMoviesPageState extends ConsumerState<CatalogMoviesPage> {
     return PopScope(
       canPop: false,
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: AppColor.dark,
+          bottom: PreferredSize(
+            preferredSize: Size(double.infinity, 20),
+            child: buildToolbar(state: currentProfile),
+          ),
+        ),
         backgroundColor: AppColor.dark,
         body: SafeArea(
           child: SingleChildScrollView(
             child: Column(
               children: [
-                buildToolbar(state: currentProfile),
                 buildTrendingMovies(state: trendingMoviesState),
                 buildCategories(state: categoryMoviesState),
                 categoryMoviesState.when(
@@ -190,6 +198,13 @@ class _CatalogMoviesPageState extends ConsumerState<CatalogMoviesPage> {
                 ],
               ),
             ),
+          GestureDetector(
+            onTap: () {
+              FirebaseAuth.instance.signOut();
+              NavigatorApp.replace(context, LoginPage());
+            },
+            child: Icon(Icons.exit_to_app, color: Colors.white),
+          ),
         ],
       ),
     );

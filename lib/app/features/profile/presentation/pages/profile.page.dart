@@ -19,7 +19,6 @@ class ProfileSelectionPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profilesAsync = ref.watch(userProfilesProvider(accountId));
-    final isLoading = ref.watch(createProfileLoadingProvider);
 
     return PopScope(
       canPop: false,
@@ -135,12 +134,10 @@ class ProfileSelectionPage extends ConsumerWidget {
                         right: -8,
                         child: GestureDetector(
                           onTap: () async {
-                            NavigatorApp.replace(context, CatalogMoviesPage());
-                            final repository = ref.read(
-                              profilesRepositoryProvider,
-                            );
-                            await repository.deleteUserProfiles(profile.id);
-                            await repository.getUserProfiles(accountId);
+                            await ref
+                                .read(profilesRepositoryProvider)
+                                .deleteUserProfiles(profile.id);
+                            ref.invalidate(userProfilesProvider(accountId));
                           },
                           child: Container(
                             padding: const EdgeInsets.all(6),

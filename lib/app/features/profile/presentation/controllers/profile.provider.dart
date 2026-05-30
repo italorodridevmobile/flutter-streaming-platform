@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
-
 import '../../../../core/network/api_client.dart';
 import '../../data/repositories/profiles_repository.impl.dart';
 import '../../domain/entities/profile.entity.dart';
@@ -19,12 +18,3 @@ final userProfilesProvider = FutureProvider.family<List<ProfileEntity>, String>(
     return await repository.getUserProfiles(accountId);
   },
 );
-
-final deleteUserProfilesProvider =
-    FutureProvider.family<dynamic, String>((
-  ref,
-  profileId,
-) async {
-  final repository = ref.watch(profilesRepositoryProvider);
-  return repository.deleteUserProfiles(profileId);
-});

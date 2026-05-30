@@ -41,7 +41,7 @@ class ResetPasswordPage extends ConsumerWidget {
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
                   colors: [AppColor.dark, AppColor.dark.withAlpha(60)],
-                  stops: [0.8, 0.9],
+                  stops: [0.5, 0.9],
                 ),
               ),
             ),

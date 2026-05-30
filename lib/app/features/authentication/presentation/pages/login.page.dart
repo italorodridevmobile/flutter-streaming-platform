@@ -17,8 +17,8 @@ class LoginPage extends ConsumerWidget {
   LoginPage({super.key});
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  final TextEditingController emailCtrl = TextEditingController(text: 'teste@gmail.com');
-  final TextEditingController passwordCtrl = TextEditingController(text: 'Teste@2026');
+  final TextEditingController emailCtrl = TextEditingController();
+  final TextEditingController passwordCtrl = TextEditingController();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -43,7 +43,7 @@ class LoginPage extends ConsumerWidget {
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
                   colors: [AppColor.dark, AppColor.dark.withAlpha(60)],
-                  stops: [0.5, 0.9],
+                  stops: [0.6, 0.9],
                 ),
               ),
             ),
